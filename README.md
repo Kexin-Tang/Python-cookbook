@@ -1,3 +1,31 @@
+- [基本数据结构](#基本数据结构)
+  - [list](#list)
+  - [tuple](#tuple)
+  - [set](#set)
+  - [dict](#dict)
+- [流程控制](#流程控制)
+  - [循环](#循环)
+    - [for](#for)
+    - [while](#while)
+  - [条件](#条件)
+  - [遍历](#遍历)
+- [函数](#函数)
+  - [函数参数传递](#函数参数传递)
+  - [参数](#参数)
+  - [匿名函数(lambda)](#匿名函数lambda)
+- [迭代 &amp; 生成](#迭代--生成)
+- [面向对象](#面向对象)
+    - [基本概念](#基本概念)
+    - [class的定义与使用](#class的定义与使用)
+    - [保护&私有](#保护私有)
+      - [保护](#保护)
+      - [私有](#私有)
+    - [继承&覆写](#继承覆写)
+    - [多态](#多态)
+    - [`__slots__`](#__slots__)
+    - [@property & @setter](#property--setter)
+    - [多重继承](#多重继承)
+
 # 基本数据结构
 ## list
 * 定义的时候使用`[]`，内部可存放各种数据类型，且可以存放重复的元素
@@ -250,14 +278,14 @@ print(data, num)    # [1,2,3,4] 3
 > ```
 
 * 不定长参数
-> * `*`的定义方式中，参数会以tuple的形式被加载
+> * `*`的定义方式中，参数会以tuple的形式被加载，即要求传递**位置参数**
 > ```py
 > def func(a, *b):
 >   print(b)
 >
 > func(1, 2, 3) # (2,3)
 > ```
-> * `**`的定义方式中，参数会以dict形式被加载，在传递参数时需要使用`param = value`的形式
+> * `**`的定义方式中，参数会以dict形式被加载，在传递参数时需要使用`param = value`的形式，即要求传递**关键字参数**
 > ```py
 > def func(a, **b):
 >   print(b)
@@ -286,13 +314,67 @@ square(2)   # 4
 
 ---
 
+# 迭代 &amp; 生成
+* 任何定义了`.__iter__()`和`.__next__()`的对象都可以成为可迭代对象，如list, dict, tuple等
+* 使用`iter()`将可迭代对象转换为迭代器，然后使用`next()`访问下一个元素<b>(迭代器只能从前往后，不可以随机访问)</b>
+> ```py
+> data = [1,2,3]
+> it = iter(data)
+> # 循环遍历
+> for i in it:
+>   print(i)
+> # 迭代器迭代
+> while True:
+>   print(next(it))
+> ```
+
+* 使用了`yield`的函数称为生成器，生成器可以视为一个迭代器。在调用生成器运行的过程中，每次遇到`yield`时函数会暂停并保存当前所有的运行信息，返回`yield`的值, 并在下一次执行`next()`方法时从当前位置继续运行。
+> ```py
+> import sys
+> def fibonacci(n):
+>   a, b, cnt = 0, 1, 0
+>   while True:
+>       if(cnt>n):
+>           return
+>       yield a
+>       a, b = b, b+a
+>       cnt+=1
+> f = fibonacci(10)
+> while True:
+>   try:
+>       print(next(f), end="")
+>   except StopIteration:
+>       sys.exit()
+> ```
+
+---
+
 # 面向对象
 ### 基本概念
-  * 类变量：类内定义的数据参数
-  * 方法：类内定义的函数
-  * 对象：实例化的类
-  * 重写/覆写：如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写
-  * 继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待
+* 属性：类内定义的数据参数
+* 方法：类内定义的函数
+* 对象：实例化的类
+* 重写/覆写：如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写
+* 继承：即一个派生类（derived class）继承基类（base class）的字段和方法。继承也允许把一个派生类的对象作为一个基类对象对待
+* 实例属性与类属性
+> ```py
+> class Stu(object):
+>   type = "Student"            # 类属性，所有Stu类均可访问，是公共属性
+>   def __init__(self, name):
+>       self.name = name        # 实例属性，每个对象的实例属性都是独立的
+> s = Stu("smith")
+> t = Stu("tom")
+>
+> print(s.name, s.type, Stu.type)   # smith Student Student
+> print(t.name, t.type, Stu.type)   # tom   Student Student
+>
+> s.type = "Teacher"
+> print(s.type, Stu.type, t.type)   # Teacher Student Student
+>
+> Stu.type = "Teacher"
+> print(Stu.type, t.type)   # Teacher Teacher
+> ```
+  
 
 ### class的定义与使用
 > ```py
@@ -302,10 +384,140 @@ square(2)   # 4
 >       pass
 >
 > stu = Student()   # 实例化
-> print(stu.name)   # 访问类变量
+> print(stu.name)   # 访问属性
 > print(stu.func()) # 使用方法
 > ```
 
-* `__init__(self, [params])`是一个会在实例化类的时候自动调用的方法，其中`self`代表了实例化的对象
+* `__init__(self, [params])`是一个会在实例化类的时候自动调用的方法，其中`self`代表了实例化的对象，在每个类内方法中都必须置于第一个参数的位置
 
-### 继承
+### 保护&私有
+|   继承类型    | 对象访问权限 | 子类访问权限 |
+| :-----------: | :----------: | :----------: |
+| 公有(default) |   可以访问   |   可以访问   |
+|     私有      |   不可访问   |   不可访问   |
+|     保护      |   不可访问   |   可以访问   |
+
+#### 保护
+* 对于保护属性和保护方法，需要加上**单下划线**，如`self._protected`
+* 受保护的属性和方法不能在对象中使用，但可以在类内或者子类中使用/访问
+* Pyhon不像C++一样真正提供了保护，而是**伪保护**--实际上实例化对象仍然可以访问属性和方法，但是不建议这么做
+
+#### 私有
+* 对于私有属性和私有方法，需要加上**双下划线**，如`self.__private`
+* 私有的属性和方法不能再对象中使用，也不能被子类继承
+* Python不像C++一样真正的提供了私有，而是**伪私有**--实际上可以通过`_className__attribute`来进行访问，但是不建议这么做
+
+### 继承&覆写
+```py
+class Animal:
+    def __init__(self, age):
+        self.age = age
+    def show(self):
+        print(self.age)
+
+class Dog(Animal):
+    def __init__(self, age, name):
+        super().__init__(self, age)
+        self.name = name
+    def show(self):
+        print(self.name, self.age)
+```
+* 子类继承父类的时候，需要在类名后加上父类的名称，如`class Dog(Animal)`
+* `super()`是一个特殊函数。使用该函数可以在创建子类的时候自动调用父类的初始化函数，并初始化父类中的属性
+* **覆写** -- 当子类中出现父类的同名方法，则在调用时，子类方法会覆盖父类方法，如上述代码调用`show()`时会打印`name`和`age`
+* 父类和子类要定义在同一个文件中
+
+### 多态
+```py
+def showAge(animal):
+    print(animal.age)
+
+showAge(Animal())
+showAge(Dog())
+```
+* 可以使用`isinstance(instance, class)`来判断某个实例化对象是否属于某个类
+> ```py
+> isinstance(Animal(), Animal)  # True
+> isinstance(Dog(), Animal)     # True
+> isinstance(Animal(), Dog)     # False
+> isinstance(Dog(), Dog)        # True
+> ```
+> 一个实例的数据类型是某个子类，那它的数据类型也可以被看做是父类。但是，反过来就不行。
+
+* 函数只要定义了参数为某个类的类型，那么该类和其子类都可以共用该函数。即一个函数可以不作修改，根据传入的class类别输出不同的内容
+> ```py
+> class Animal(object):
+>   def __init__(self):
+>       pass
+> class Dog(Animal):
+>   def __init__(self, name):
+>       super().__init__(self)
+>       self.name = name
+>   def run(self):
+>       print(self.name + " is running...")
+> class Tortoise(Animal):
+>   def __init__(self, name):
+>       super().__init__(self)
+>       self.name = name
+>   def run(self):
+>       print(self.name + " is running slowly...")
+>
+> dog = Dog('dog')
+> tor = Torroise('tor')
+>
+> def run(Animal):
+>   Animal.run()
+>
+> run(dog)  # "dog is running..."
+> run(tor)  # "tor is running slowly..."
+> ```
+
+* 调用方只管调用，不管细节，而当我们新增一种子类时，只要确保方法编写正确，不用管原来的代码是如何调用的
+
+* 静态语言 VS 动态语言
+  * 在静态语言中（如Java，C++），如果某函数定义参数为`Animal`类型，那么传入的参数必须为`Animal`或者`Animal`的子类
+  * 在动态语言中（如Python），如果某函数定义参数为`Animal`类型，而传入的参数可以为别的类型，但是要求该class有该函数定义中的各种方法和属性即可<i>(长得像鸭子，叫声像鸭子，走路像鸭子&rarr;一只鸭子)</i>
+
+### `__slots__`
+在动态语言中，可以给class绑定额外的属性和方法，为了限制绑定的内容，可以使用`__slots__(attr1, attr2, ...)`
+
+<u>(注意：使用前后双下划线的某些方法有特殊作用，如`__str__`, `__getitem__`, `__iter__`)</u>
+```py
+class Stu:
+    __slots__('name', 'age')
+    ...
+s = Stu()
+s.name = 'tom'  # OK
+s.grade = 88    # Error, __slots__ does not have 'grade'
+```
+
+### @property & @setter
+* 在类中，比如定义了一个属性叫做`self.__score`，但是不希望在类外暴露该属性，那么需要再定义一个获取的函数`getScore(self)`和一个设置的函数`setScore(self, value)`，但是这样过于复杂。于是可以使用**装饰器**
+```py
+class People(object):
+    @property
+    def birth(self):
+        return self.__birth
+    @birth.setter
+    def birth(self, day):
+        self.__birth = day
+    
+    @property
+    def age(self):
+        return 2021-self.__birth
+
+t = People()
+t.birth = 2000  # 相当于调用t.birth(2000)
+print(t.birth)  # 相当于调用t.birth()
+t.age           # 21
+t.age = 21      # 报错，因为age被设置为只读属性
+```
+* 通过只设置`@property`，可以将属性设置为**只读**
+
+### 多重继承
+* 比如要定义一个`Dog`class，那么需要定义其为`Mammal`+`Runnable`，因此可以使用如下的多重继承
+```py
+class Dog(Mammal, Runnable):
+    ...
+```
+* 一般而言设置继承会有一个主线，比如从Animal&rarr;Mammal&rarr;Dog，那么Runnable需要作为旁路插入，此时Runnable被称为MixIn
