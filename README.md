@@ -60,6 +60,23 @@
 > * sorted(`list`) -- 临时升序排序list，源list并不会改变
 > * list.reverse() -- **永久**反转list的元素内容，如[a, b, c]&rarr;[c, b, a]
 
+如果元素都是形如(x, y)这样的多维数据，且想利用第二个位置的数据进行排序，可以通过指定key来实现
+```py
+def func(ele):
+  return ele[1]
+nums = [[1,5], [2,2]]
+nums.sort(key=func)   # [[2,2], [1,5]]
+```
+
+同样，如果希望重新定义排序的方式，则可以使用key=cmp_to_key(func)的形式。
+由于sort(key=...)每次只会取出一个元素传给key的函数，如果想要指定比如相邻两个元素进行计算，
+则需要使用cmp_to_key进行转换。其中如果func返回负数，则进行交换，如果为正数，则不改变顺序。
+```py
+compare = lambda x,y: int(y+x)-int(x+y)
+nums = ['10', '2']
+nums.sort(key=cmp_to_key(compare))  # ['2', '10'], 因为'2'+'10'='210'>'102'='10'+'2'
+```
+
 * 列表长度
 > * len(list) -- 获取列表长度(元素个数)
 
