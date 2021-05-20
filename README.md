@@ -95,66 +95,7 @@ nums.sort(key=cmp_to_key(compare))  # ['2', '10'], 因为'2'+'10'='210'>'102'='1
 > * listName[`start=0`: `end=len(listName)`]将会取<b>`[start, end)`</b>的元素，start默认为头部，end默认为尾部
 > * 可以使用`-1`等来从尾部开始计算选取元素
 
-* [**直接赋值 Vs 浅拷贝 Vs 深拷贝**](https://www.runoob.com/w3cnote/python-understanding-dict-copy-shallow-or-deep.html) [[More Details and Example]](https://zhuanlan.zhihu.com/p/54011712)
-> * 赋值 -- 类似于C++中引用，就是给一个内存区域换了个名字而已
-> * 浅拷贝有三种方式
->   * 切片 -- `data2 = data1[:]` or `data2 = [i for i in data1]`
->   * 工厂函数 -- `data2 = list(data1)`
->   * copy()函数 -- `data2 = data1.copy()`
-> * 深拷贝只有一种方式 -- `data2 = copy.deepcopy(data1)`
-
-> **总结** 
->   1. 外层添加元素时，浅拷贝不会随原列表变化而变化；内层添加元素时，浅拷贝才会变化。
->   2. 无论原列表如何变化，深拷贝都保持不变。
->   3. 赋值对象随着原列表一起变化。
-```py
-import copy
-
-# 不可变对象
-print("<=====对不可变对象tuple中的可变对象进行更改=====>")
-t1 = (1, 2, [3, 4])
-
-t2 = t1                 # 直接赋值
-t3 = t1[:]              # 浅复制
-t4 = copy.deepcopy(t1)  # 深复制
-
-t1[2].append(5)
-print(t1, t2, t3, t4)
-
-print("<=====对不可变对象tuple赋予新的值=====>")
-t1 = (1, 2, [3, 4])
-
-t2 = t1                 # 直接赋值
-t3 = t1[:]              # 浅复制
-t4 = copy.deepcopy(t1)  # 深复制
-
-t1 = (1, 2, 3)
-print(t1, t2, t3, t4)
-
-# 可变对象
-print('<=====对可变对象list进行更改=====>')
-l1 = [1, 2, [3, 4]]
-
-l2 = l1                 # 直接赋值
-l3 = l1[:]              # 浅复制
-l4 = copy.deepcopy(l1)  # 深复制
-
-l1.append(5)
-print(l1, l2, l3, l4)
-
-print('<=====对可变对象list内部的可变对象进行更改=====>')
-l1 = [1, 2, [3, 4]]
-
-l2 = l1                 # 直接赋值
-l3 = l1[:]              # 浅复制
-l4 = copy.deepcopy(l1)  # 深复制
-
-l1[2].append(5)
-print(l1, l2, l3, l4)
-
-```
-![tuple.jpg](https://i.loli.net/2021/02/10/tev4TMDWnAiGxIf.jpg)
-![list.jpg](https://i.loli.net/2021/02/10/5SPs31MHTYADLzF.jpg)
+* [**直接赋值 Vs 浅拷贝 Vs 深拷贝**](http://kexintang.xyz/2021/05/20/Python%E4%B8%AD%E7%9A%84%E6%B5%85%E6%8B%B7%E8%B4%9D%E4%B8%8E%E6%B7%B1%E6%8B%B7%E8%B4%9D/)
 
 * `+`拼接 -- 多个列表可以通过`+`进行拼凑
 
