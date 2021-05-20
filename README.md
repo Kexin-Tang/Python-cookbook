@@ -508,6 +508,22 @@ t.age           # 21
 t.age = 21      # 报错，因为age被设置为只读属性
 ```
 * 通过只设置`@property`，可以将属性设置为**只读**
+* 还可以使用另一种方法设置property, setter
+```py
+class People(object):
+
+    def get_birth(self):
+        return self.__birth
+
+    def set_birth(self, day):
+        self.__birth = day
+    
+    birth = property(get_birth, set_birth)
+
+t = People()
+t.birth = 2000  # 相当于调用t.birth(2000)
+print(t.birth)  # 相当于调用t.birth()
+```
 
 ### <span style="color: #ef476f; background-color:white;">多重继承</span>
 
