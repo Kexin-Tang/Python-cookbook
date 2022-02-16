@@ -1,7 +1,7 @@
 <h1><span style="color: #ef476f; background-color:white;">Python cookbook</span></h1>
 
 本文档主要记录学习Python的一些基础知识
-
+- [<span style="color: #ef476f; background-color:white;">文件结构</span>](#文件结构)
 - [<span style="color: #ef476f; background-color:white;">基本数据结构</span>](#基本数据结构)
   - [<span style="color: #ef476f; background-color:white;">列表List</span>](#列表list)
   - [<span style="color: #ef476f; background-color:white;">元组Tuple</span>](#元组tuple)
@@ -36,6 +36,31 @@
     - [<span style="color: #ef476f; background-color:white;">filter函数</span>](#filter函数)
   - [<span style="color: #ef476f; background-color:white;">闭包</span>](#闭包)
   - [<span style="color: #ef476f; background-color:white;">装饰器</span>](#装饰器)
+
+## <span style="color: #ef476f; background-color:white;">文件结构</span>
+
+python的文件一般有模块(module), 包(package)和库(lib)，但实际上，python并没有库的概念，你可以认为某些模块称为库，也可以认为某些包是库。
+
+假设我们的某个project的文件结构如下:
+
+```
+myProj -
+       |
+       myPkg -
+       |     | __init__.py
+       |     | func.py
+       |
+       src   -
+             | main.py
+```
+
+那么我们可以认为，`func.py`是一个模块，`myPkg`是一个包。即每个.py文件都是模块，都可以使用`import`进行引入。而当我们将多个模块放在同一个文件夹下，并
+给这个文件夹一个初始化文件`__init__.py`，那么这个文件夹就是一个包。
+
+具体而言，在`main.py`中，可以通过`import myPkg`来引入包，同时通过`from myPkg import func`或`import myPkg.func`来引入模块。
+
+---
+
 
 ## <span style="color: #ef476f; background-color:white;">基本数据结构</span>
 
